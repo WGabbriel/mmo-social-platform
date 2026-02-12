@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ifpe.mmo_social_platform.dto.auth.LoginDto;
 import com.ifpe.mmo_social_platform.dto.auth.UserRequestDto;
 import com.ifpe.mmo_social_platform.dto.auth.UserResponseDto;
 import com.ifpe.mmo_social_platform.service.AuthService;
@@ -29,6 +30,12 @@ public class AuthController {
   public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserRequestDto user) {
     UserResponseDto createdUser = authService.createNewUser(user);
     return ResponseEntity.created(URI.create("/users/" + createdUser.id())).body(createdUser);
+  }
+
+  @PostMapping("/login")
+  public String login(@Valid @RequestBody LoginDto user) {
+    String token = authService.authenticate(user);
+    return token;
   }
 
 }
