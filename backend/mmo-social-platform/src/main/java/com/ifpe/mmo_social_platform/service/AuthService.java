@@ -6,9 +6,9 @@ import java.util.Date;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ifpe.mmo_social_platform.dto.auth.register.UserMapper;
-import com.ifpe.mmo_social_platform.dto.auth.register.UserRequestDto;
-import com.ifpe.mmo_social_platform.dto.auth.register.UserResponseDto;
+import com.ifpe.mmo_social_platform.dto.auth.UserMapper;
+import com.ifpe.mmo_social_platform.dto.auth.UserRequestDto;
+import com.ifpe.mmo_social_platform.dto.auth.UserResponseDto;
 import com.ifpe.mmo_social_platform.entity.User;
 import com.ifpe.mmo_social_platform.exception.custom.EmailAlreadyExistsException;
 import com.ifpe.mmo_social_platform.repository.UserRepository;

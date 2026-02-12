@@ -1,4 +1,4 @@
-package com.ifpe.mmo_social_platform.dto.auth.register;
+package com.ifpe.mmo_social_platform.dto.auth;
 
 import org.mapstruct.Mapper;
 

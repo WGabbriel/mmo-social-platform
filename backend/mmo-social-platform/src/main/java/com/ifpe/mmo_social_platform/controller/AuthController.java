@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ifpe.mmo_social_platform.dto.auth.register.UserRequestDto;
-import com.ifpe.mmo_social_platform.dto.auth.register.UserResponseDto;
+import com.ifpe.mmo_social_platform.dto.auth.UserRequestDto;
+import com.ifpe.mmo_social_platform.dto.auth.UserResponseDto;
 import com.ifpe.mmo_social_platform.service.AuthService;
 
 import jakarta.validation.Valid;
