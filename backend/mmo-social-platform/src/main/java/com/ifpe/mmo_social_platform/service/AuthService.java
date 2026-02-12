@@ -32,13 +32,12 @@ public class AuthService {
 
   public UserResponseDto createNewUser(UserRequestDto request) {
 
-    userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
+    userRepository.findByEmail(request.email()).ifPresent(u -> {
       throw new EmailAlreadyExistsException("Email already exists");
     });
 
-    User user = new User();
-    request.setPassword(passwordEncoder.encode(request.getPassword()));
-    user = userMapper.toEntity(request);
+    User user = userMapper.toEntity(request);
+    user.setPassword(passwordEncoder.encode(request.password()));
     user.setCreatedAt(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
     return userMapper.toResponseDTO(userRepository.save(user));
   }
