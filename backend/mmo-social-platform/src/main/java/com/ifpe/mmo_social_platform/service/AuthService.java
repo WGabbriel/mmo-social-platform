@@ -1,7 +1,6 @@
 package com.ifpe.mmo_social_platform.service;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +10,7 @@ import com.ifpe.mmo_social_platform.dto.auth.register.UserMapper;
 import com.ifpe.mmo_social_platform.dto.auth.register.UserRequestDto;
 import com.ifpe.mmo_social_platform.dto.auth.register.UserResponseDto;
 import com.ifpe.mmo_social_platform.entity.User;
+import com.ifpe.mmo_social_platform.exception.custom.EmailAlreadyExistsException;
 import com.ifpe.mmo_social_platform.repository.UserRepository;
 import com.ifpe.mmo_social_platform.security.JwtUtils;
 
@@ -31,6 +31,11 @@ public class AuthService {
   }
 
   public UserResponseDto createNewUser(UserRequestDto request) {
+
+    userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
+      throw new EmailAlreadyExistsException("Email already exists");
+    });
+
     User user = new User();
     request.setPassword(passwordEncoder.encode(request.getPassword()));
     user = userMapper.toEntity(request);
