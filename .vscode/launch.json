@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MmoSocialPlatformApplication<mmo-social-platform>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ifpe.mmo_social_platform.MmoSocialPlatformApplication",
+            "projectName": "mmo-social-platform",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

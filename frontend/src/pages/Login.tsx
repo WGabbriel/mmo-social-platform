@@ -1,38 +1,32 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Gamepad2, Loader2 } from "lucide-react"; // Adicionei um ícone de carregamento
+import { Gamepad2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginUser } from "@/lib/auth"; // Importamos a função que criamos
-import { useToast } from "@/hooks/use-toast"; // Para mostrar avisos na tela
+import { loginUser } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
+import axios, { AxiosError } from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false); // Estado para o botão de "carregando"
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Desabilita o botão para evitar cliques duplos
-
+    setLoading(true);
     try {
-      // Aqui acontece a "mágica": enviamos os dados para o Java
-      await loginUser(form); 
-      
-      toast({
-        title: "Bem-vindo de volta!",
-        description: "Login realizado com sucesso.",
-      });
-
+      await loginUser(form);
+      toast({ title: "Bem-vindo!", description: "Login realizado com sucesso." });
       navigate("/dashboard");
-    } catch (error: any) {
-      // Se o Java retornar erro (senha errada, servidor offline, etc)
+    } catch (err: unknown) {
+      const error = err as AxiosError<string>;
       toast({
         variant: "destructive",
         title: "Erro ao entrar",
-        description: error.response?.data || "Verifique sua conexão com o servidor.",
+        description: error.response?.data || "Verifique suas credenciais."
       });
     } finally {
       setLoading(false);
@@ -40,7 +34,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2">
@@ -53,42 +47,15 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="rounded-lg border bg-card p-6 space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="gamer@email.com" 
-              value={form.email} 
-              onChange={e => setForm({ ...form, email: e.target.value })} 
-              required 
-            />
+            <Input id="email" type="email" placeholder="gamer@email.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="••••••••" 
-              value={form.password} 
-              onChange={e => setForm({ ...form, password: e.target.value })} 
-              required 
-            />
+            <Input id="password" type="password" placeholder="••••••••" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
           </div>
-          
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Conectando...
-              </>
-            ) : (
-              "Entrar"
-            )}
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Entrar"}
           </Button>
-
-          <p className="text-center text-sm text-muted-foreground">
-            Não tem conta?{" "}
-            <Link to="/register" className="text-primary font-medium hover:underline">Cadastrar</Link>
-          </p>
         </form>
       </div>
     </div>
