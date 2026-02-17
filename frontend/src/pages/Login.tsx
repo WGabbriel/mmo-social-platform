@@ -1,17 +1,42 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Gamepad2 } from "lucide-react";
+import { Gamepad2, Loader2 } from "lucide-react"; // Adicionei um ícone de carregamento
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { loginUser } from "@/lib/auth"; // Importamos a função que criamos
+import { useToast } from "@/hooks/use-toast"; // Para mostrar avisos na tela
 
 const Login = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false); // Estado para o botão de "carregando"
   const [form, setForm] = useState({ email: "", password: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setLoading(true); // Desabilita o botão para evitar cliques duplos
+
+    try {
+      // Aqui acontece a "mágica": enviamos os dados para o Java
+      await loginUser(form); 
+      
+      toast({
+        title: "Bem-vindo de volta!",
+        description: "Login realizado com sucesso.",
+      });
+
+      navigate("/dashboard");
+    } catch (error: any) {
+      // Se o Java retornar erro (senha errada, servidor offline, etc)
+      toast({
+        variant: "destructive",
+        title: "Erro ao entrar",
+        description: error.response?.data || "Verifique sua conexão com o servidor.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,15 +53,38 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="rounded-lg border bg-card p-6 space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="gamer@email.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
+            <Input 
+              id="email" 
+              type="email" 
+              placeholder="gamer@email.com" 
+              value={form.email} 
+              onChange={e => setForm({ ...form, email: e.target.value })} 
+              required 
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
-            <Input id="password" type="password" placeholder="••••••••" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
+            <Input 
+              id="password" 
+              type="password" 
+              placeholder="••••••••" 
+              value={form.password} 
+              onChange={e => setForm({ ...form, password: e.target.value })} 
+              required 
+            />
           </div>
-          <Button type="submit" className="w-full">
-            Entrar
+          
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Conectando...
+              </>
+            ) : (
+              "Entrar"
+            )}
           </Button>
+
           <p className="text-center text-sm text-muted-foreground">
             Não tem conta?{" "}
             <Link to="/register" className="text-primary font-medium hover:underline">Cadastrar</Link>
